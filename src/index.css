@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+.gradient-bg{
+    background:  linear-gradient(
+        60deg,
+        hsl(183, 82%, 4%),
+        #03181a,
+        #062e31
+    );
+    background-size: 600% 600%;
+    background-clip: "background";
+}

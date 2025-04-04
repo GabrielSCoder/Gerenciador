@@ -1,0 +1,1 @@
+export const inputClasses = "text-black dark:text-white bg-white dark:bg-black"
