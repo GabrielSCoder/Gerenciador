@@ -29,6 +29,7 @@ type fieldInput = {
     requiredText?: string
     errors?: any
     value?: any
+    required ?: boolean
 }
 
 type rootProps = {
@@ -187,7 +188,7 @@ function TextArea(props: textAreaInput & React.HtmlHTMLAttributes<HTMLTextAreaEl
                 register?.(name)?.onChange(e);
                 onChange?.(e); 
             }}
-            className={classNames(className, inputClasses, "border rounded-md w-full focus:outline-none border-gray-500 dark:border-0 resize-none")}
+            className={classNames(className, "resize-none")}
             disabled={disabled}>
         </textarea>
     )
@@ -205,7 +206,7 @@ function CheckBox(props: fieldInput) {
                 name={name}
                 control={control}
                 render={({ field }) => (
-                    <Check.Root className="flex justify-center items-center size-[25px] appearance-none rounded  bg-white shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px_black]"
+                    <Check.Root className={classNames("flex justify-center items-center size-[25px] appearance-none rounded", className)}
                         checked={field.value}
                         onCheckedChange={field.onChange}
                     >
@@ -218,11 +219,12 @@ function CheckBox(props: fieldInput) {
 
         )
     }
+
     return (
         <Input className={className}>
             {label && !!label ? (
 
-                <div className="flex items-center justify-center">
+                <div className="flex items-center">
                     <Check2 />
                     <label
                         className={classNames("pl-[15px] text-[15px] leading-none ", labelStyle)}
@@ -244,10 +246,10 @@ function SelectOption(props: selectInputOptions) {
 
     const Selectt = () => {
         return (
-            <select {...register && register(name)} className="rounded-md p-2 w-full border-slate-300">
+            <select {...register && register(name)} className="rounded-md p-2 w-full border border-slate-300">
                 <option className="">Selecione</option>
-                {dados && dados.map((item: { id: Key | null | undefined; name: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) => (
-                    <option key={item.id}>{item.name}</option>
+                {dados && dados.map((item: { id: Key | null | undefined; nome: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) => (
+                    <option key={item.id}>{item.nome}</option>
                 ))}
             </select>
         )
@@ -267,44 +269,21 @@ function SelectOption(props: selectInputOptions) {
     )
 }
 
-function SelectOpt2(props: { control: any, name: string, errors?: any, isRequired?: boolean, requiredText?: string }) {
-
-    const { control, name, isRequired, requiredText } = props
-
-    return (
-        <>
-            <Controller
-                name={name}
-                control={control}
-                rules={isRequired ? { required: requiredText || "Campo obrigatório" } : {}}
-                render={({ field, fieldState }) => (
-                    <GeneroSelectTemplate field={field} Isrequired={isRequired} errors={fieldState.error} />
-                )} />
-        </>
-
-    )
-}
 
 function OnlyNumber(props: fieldInput) {
 
-    const { name, disabled, maxLength, register, placeholder, className, label, labelStyle } = props
+    const { name, disabled, maxLength, register, placeholder, className, label, labelStyle, required } = props
 
-    const Numberr = () => {
-        return (
-            <input type="number" name={name} {...register && register(name)} maxLength={maxLength} disabled={disabled} placeholder={placeholder} className={classNames("text-black rounded-md w-full border-slate-300", className)} />
-        )
-    }
     return (
-        <Input className={className}>
-            {label && !!label ? (
-                <label className={classNames("", labelStyle)}> {label}
-                    <Numberr />
+       <>
+            {label ? (
+                <label className={labelStyle}>{required ? (<>{label}<strong className="text-red-500"> *</strong></>) : label}
+                    <input type="number" name={name} {...register && register(name)} maxLength={maxLength} disabled={disabled} placeholder={placeholder} className={classNames("text-black ", className)} />
                 </label>
             ) : (
-                <Numberr />
+                <input type="number" name={name} {...register && register(name)} maxLength={maxLength} disabled={disabled} placeholder={placeholder} className={classNames("text-black ", className)} />
             )}
-        </Input>
-
+        </>
     )
 }
 
@@ -405,8 +384,5 @@ Input.Number = OnlyNumber
 Input.Text = TextInput
 Input.CheckBox = CheckBox
 Input.Title = Title
-Input.SelectOpt = SelectOpt2
-// Input.Cnpj = InputCnpj
+Input.Select = SelectOption
 Input.Password = Password
-// Input.Date = DateInput
-Input.Select2 = SelectOption

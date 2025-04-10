@@ -28,7 +28,7 @@ export default function HomeLayout() {
                         <RxExit />
                     </button>
                 </div>
-                <div className="bg-[#E5E7EB] h-full w-full p-4">
+                <div className="bg-gray-100 h-full w-full p-4">
                     <Outlet />
                 </div>
             </div>

@@ -2,16 +2,16 @@ import { ReactNode } from "react"
 
 type TableProps = {
     children: ReactNode;
-    classes?: string;
+    ClassName?: string;
 }
 
 export default function Table(props: TableProps) {
 
-    const { children, classes } = props;
+    const { children, ClassName } = props;
 
     return (
         <>
-            <table className={classes}>
+            <table className={ClassName}>
                 {children}
             </table>
         </>
@@ -19,10 +19,10 @@ export default function Table(props: TableProps) {
 }
 
 const THead = (props: TableProps) => {
-    const { children, classes } = props;
+    const { children, ClassName } = props;
 
     return (
-        <th className={classes}>
+        <th className={ClassName}>
             {children}
         </th>
     )
@@ -30,10 +30,10 @@ const THead = (props: TableProps) => {
 
 const TRow = (props: TableProps) => {
 
-    const { children, classes } = props;
+    const { children, ClassName } = props;
 
     return (
-        <tr className={classes}>
+        <tr className={ClassName}>
             {children}
         </tr>
     )
@@ -41,11 +41,11 @@ const TRow = (props: TableProps) => {
 
 const ColumnBody = (props: TableProps) => {
 
-    const { children, classes } = props;
+    const { children, ClassName } = props;
 
     return (
         <>
-            <td className={classes}>
+            <td className={ClassName}>
                 {children}
             </td>
         </>
@@ -54,10 +54,10 @@ const ColumnBody = (props: TableProps) => {
 
 const Header = (props: TableProps) => {
 
-    const { children, classes } = props;
+    const { children, ClassName } = props;
 
     return (
-        <thead className={classes}>
+        <thead className={ClassName}>
             {children}
         </thead>
     )
@@ -65,10 +65,10 @@ const Header = (props: TableProps) => {
 
 const Body = (props: TableProps) => {
 
-    const { children, classes } = props;
+    const { children, ClassName } = props;
 
     return (
-        <tbody className={classes}>
+        <tbody className={ClassName}>
             {children}
         </tbody>
     )
@@ -76,10 +76,10 @@ const Body = (props: TableProps) => {
 
 const Foot = (props: TableProps) => {
 
-    const { children , classes} = props;
+    const { children , ClassName} = props;
 
     return (
-        <tfoot className={classes}>
+        <tfoot className={ClassName}>
             {children}
         </tfoot>
     )
