@@ -21,8 +21,13 @@ const homeRoutes =
             path: "/consulta",
             element: <ConsultaForm />
         },
+        
         {
-            path: "/cliente/criar",
+            path: "/cliente",
+            element: <CriarCliente />
+        },
+        {
+            path: "/cliente/:id",
             element: <CriarCliente />
         },
         {

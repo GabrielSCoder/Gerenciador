@@ -59,22 +59,30 @@ const TextArea = ({ name, register, className }: props) => {
 
 function SelectOption(props: any) {
 
-    const { name, dados, register, className, label, labelStyle, valor } = props
+    const { name, dados, register, className, label, labelStyle, valor, formState, setValue, defaultOpt, defaultOptTitle } = props
 
     return (
         <>
             {label ? (
                 <label className={classNames("", labelStyle)}> {label}
-                    <select {...register && register(name)} className={classNames("rounded-md p-2 w-full border border-slate-300", className)}>
-                        <option className="" value={0}>Selecione</option>
-                        {dados && dados.map((item: { id: Key | null | undefined | number; nome: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) => (
-                            <option key={item.id} value={props.valor == "id" ? item.id : item.nome}>{item.nome}</option>
+                    <select {...register && register(name)} className={classNames("rounded-md p-2 w-full border border-slate-300", className)}
+                        onChange={(e) => {
+                            const v = e.target.value; if (v == "padrao" && !defaultOpt) { const dfVal = formState.defaultValue?.[name] ?? ""; setValue(name, dfVal) } else { setValue(name, v) }
+                        }}
+                    >
+                        {defaultOpt ? <option className="" value={"padrao"}>{defaultOptTitle ? defaultOptTitle : "Selecione"}</option> : ""}
+                        {dados && dados.map((item: any) => (
+                            <option key={item.id} value={props.valor == "id" ? item.id : props.valor == "nome" ? item.nome : item.val}>{item.nome}</option>
                         ))}
                     </select>
                 </label>
             ) : (
-                <select {...register && register(name)} className={classNames("rounded-md p-2 w-full border border-slate-300", className)}>
-                    <option className="">Selecione</option>
+                <select {...register && register(name)} className={classNames("rounded-md p-2 w-full border border-slate-300", className)}
+                    onChange={(e) => {
+                        const v = e.target.value; if (v == "padrao" && !defaultOpt) { const dfVal = formState.defaultValue?.[name] ?? ""; setValue(name, dfVal) } else { setValue(name, v) }
+                    }}
+                >
+                    {defaultOpt ? <option className="" value={"padrao"}>{defaultOptTitle ? defaultOptTitle : "Selecione"}</option> : ""}
                     {dados && dados.map((item: { id: Key | null | undefined; nome: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) => (
                         <option key={item.id}>{item.nome}</option>
                     ))}
@@ -104,12 +112,12 @@ const Dte = (props: props) => {
             {label ? (
                 <label className={labelClassName}> {required ? (<>{label}<strong className="text-red-500"> *</strong></>) : label}
                     <InputMask mask="dd/mm/yyyy" replacement={{ d: /\d/, m: /\d/, y: /\d/ }}  {...register && register(name)} className={classNames("block", className)}
-                     placeholder={placeholder} />
+                        placeholder={placeholder} />
                 </label>
             )
                 : (
                     <InputMask mask="dd/mm/yyyy" replacement={{ d: /\d/, m: /\d/, y: /\d/ }}  {...register && register(name)} className={classNames("block", className)}
-                     placeholder={placeholder} />
+                        placeholder={placeholder} />
                 )}
         </>
 

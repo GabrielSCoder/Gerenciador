@@ -1,11 +1,9 @@
-import { toast } from "react-toastify";
 import Button from "../../components/Button/index.tsx";
 import { FormData, Input } from "../../components/Inputs";
 import FormInput from "../Inputs/FormInputs.tsx";
 import useToastRequest from "../../hooks/useToastRequest.ts";
-import { useState } from "react";
+
 import { useWatch } from "react-hook-form";
-import Card from "../../components/Card/index.tsx";
 
 type props = {
     control: any
