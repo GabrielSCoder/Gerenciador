@@ -78,3 +78,23 @@ export const postRequestWoError = async (url: string, obj: any) => {
         return (error);
     }
 }
+
+export const deleteRequest = async (url: string) => {
+
+    const axios = await getaxios();
+    const hmac = window.localStorage.getItem("NIF")
+
+    try {
+        return axios.delete(url, {
+            headers: {
+                Authorization: window.localStorage.getItem("profile") ? `Bearer ${window.localStorage.getItem("profile")}` : "",
+                HMAC : hmac,
+                timestamp : Date.now(),
+            },
+            withCredentials : true
+        });
+
+    } catch (error) {
+        throw (error)
+    }
+}

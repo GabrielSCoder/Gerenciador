@@ -24,8 +24,8 @@ export default function Menu(props: props) {
                     <span className='font-bold'>CRM</span>
                 </h1>
 
-                <div className="w-[150px] bg-black flex justify-center mt-10 border border-slate-300 rounded-3xl">
-                    <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/061.png" className="h-150px w-[150px] object-cover" />
+                <div className="w-[150px] h-[200px] bg-black flex justify-center mt-10 border border-slate-300 rounded-3xl">
+                    <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/061.png" className="h-[150px] w-[150px] object-cover" />
                 </div>
 
                 <Opts />

@@ -1,4 +1,5 @@
 import './App.css'
+import CriarCliente from './pages/Cliente/CriarCliente';
 import Router from './routes'
 import { ToastContainer } from 'react-toastify';
 

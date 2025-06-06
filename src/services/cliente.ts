@@ -1,7 +1,11 @@
-import { getRequest, postRequest } from "./request";
+import { deleteRequest, getRequest, postRequest, putRequest  } from "./request";
 
 export async function postCliente (data : any) {
     return await postRequest("/cliente", data)
+}
+
+export async function updateCliente (data : any) {
+    return await putRequest("/cliente", data)
 }
 
 export async function getCliente (id : number) {
@@ -15,4 +19,10 @@ export async function getClienteSelect () {
 export async function getClientePagination (data : any) {
     return await postRequest("/cliente/pagination", data)
 }
+
+export async function deleteCliente (id : number) {
+    return await deleteRequest("/cliente/" + id)
+}
+
+
 

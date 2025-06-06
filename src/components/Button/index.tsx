@@ -20,7 +20,7 @@ const Button = (props: props) => {
             disabled={disabled || loading}
             onClick={onClick}
             className={classNames(
-                " text-black rounded-3xl p-2 w-fit font-semibold",
+                " text-black rounded-3xl p-2 w-fit font-semibold hover:cursor-pointer",
                 loading && "cursor-not-allowed grayscale-[50%]",
                 type == "submit" && "text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br ring-inset ring-1 focus:ring-2 focus:outline-none focus:ring-green-400 dark:focus:ring-green-800 font-bold rounded-md text-sm py-2.5 text-center mb-2",
                 type == "delete" && "bg-red-500",

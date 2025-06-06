@@ -9,12 +9,14 @@ type props = {
     control: any
     register: any
     handleFunction: any
+    loading ?: boolean
+    setState ?: any
 }
 
 export default function ClientForm(props: props) {
 
-    const { control, register, handleFunction } = props
-    const { notify } = useToastRequest(handleFunction, { pending: "salvando...", success: "Salvo!", error: "Erro" })
+    const { control, register, setState } = props
+   
     const tel = useWatch({ control, name: "telefone_adicional" })
 
     return (
@@ -37,7 +39,7 @@ export default function ClientForm(props: props) {
             <Input.CheckBox name="telefone_adicional" control={control} register={register} label="Telefone Adicional?" labelStyle="text-black justify-start" className="border border-slate-300"/>
 
             <div className="w-full col-span-4 flex items-center justify-center">
-                <Button type="submit" onClick={notify} text="Confirmar" className="min-w-[150px]" />
+                <Button type="submit" onClick={() => setState(true)} text="Confirmar" className="min-w-[150px]" disabled={props.loading} />
             </div>
 
         </FormData>
