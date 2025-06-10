@@ -8,8 +8,8 @@ export async function getUsuario (id : number) {
     return await getRequest("/usuario/" + id)
 }
 
-export async function getUsuarioSelect () {
-    return await getRequest("/usuario/select")
+export async function getUsuarioSelect (data : any) {
+    return await postRequest("/usuario/select", data)
 }
 
 export async function getUsuarioPagination () {

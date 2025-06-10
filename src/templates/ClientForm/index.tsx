@@ -1,7 +1,6 @@
 import Button from "../../components/Button/index.tsx";
 import { FormData, Input } from "../../components/Inputs";
 import FormInput from "../Inputs/FormInputs.tsx";
-import useToastRequest from "../../hooks/useToastRequest.ts";
 
 import { useWatch } from "react-hook-form";
 
@@ -24,13 +23,16 @@ export default function ClientForm(props: props) {
 
             <FormInput.inputTxt register={register} name="nome" control={control} label="Nome" labelClassName="col-span-4 text-lg" required />
 
-            <FormInput.inputTxt register={register} name="indentificacao" control={control} label="Indentificação (RG/CPF)" labelClassName="col-span-4 text-lg" />
+            <FormInput.inputTxt register={register} name="indentificacao" control={control} label="Indentificação (RG/CPF)" labelClassName="col-span-2 text-lg" required />
 
+            <FormInput.Date register={register} control={control} name="data_nascimento" className="" label="Data de Nascimento" labelClassName="text-lg col-span-2" required />
+            
             <FormInput.inputTxt register={register} control={control} name="endereco" required label="Endereço" labelClassName="col-span-3 text-lg" />
 
             <FormInput.Number register={register} control={control} name="numero" required label="Número" labelClassName="text-lg col-span-1" />
 
             <FormInput.inputTxt register={register} control={control} name="telefone" className="" label="Telefone" labelClassName="text-lg col-span-4" />
+
 
             {tel ? (
                 <FormInput.inputTxt register={register} control={control} name="telefone2" label="Telefone extra" labelClassName="col-span-4 text-lg" />

@@ -12,8 +12,8 @@ export async function getCliente (id : number) {
     return await getRequest("/cliente/" + id)
 }
 
-export async function getClienteSelect () {
-    return await getRequest("/cliente/select")
+export async function getClienteSelect (data : any) {
+    return await postRequest("/cliente/select", data)
 }
 
 export async function getClientePagination (data : any) {

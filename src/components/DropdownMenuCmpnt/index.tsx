@@ -27,6 +27,12 @@ export default function DropdownMenuCmpnt(props: props) {
                         setOpen(false)
                         props.nav(`/cliente/${props.data.id}`)
                     }} className="relative flex h-[25px] select-none items-center rounded-[3px] text-[13px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-green-500 data-[highlighted]:text-white">
+                        Ver
+                    </DropDown.Item>
+                    <DropDown.Item onClick={() => {
+                        setOpen(false)
+                        props.nav(`/cliente/editar/${props.data.id}`)
+                    }} className="relative flex h-[25px] select-none items-center rounded-[3px] text-[13px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-green-500 data-[highlighted]:text-white">
                         Editar
                     </DropDown.Item>
                     <DropDown.Item className="relative flex h-[25px] select-none items-center rounded-[3px] text-[13px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-green-500 data-[highlighted]:text-white" onClick={() => {

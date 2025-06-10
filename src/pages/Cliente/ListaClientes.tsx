@@ -93,7 +93,7 @@ export default function ListaCliente() {
     }
 
     const getUsers = async () => {
-        const dt = await getUsuarioSelect()
+        const dt = await getUsuarioSelect({pesquisa : ""})
         if (dt.data.success) {
             setUsers(dt.data.dados)
         }
@@ -192,7 +192,9 @@ export default function ListaCliente() {
                                     <td className="px-2 py-2 text-gray-600 truncate">
                                         {value.usuario_criador?.nome ?? "Desconhecido"} - {dateTimeStampToDate(value.data_criacao)} - {dateTimeStampToHour(value.data_criacao)}
                                     </td>
-                                    <td className="px-2 py-2 text-gray-600">{value.data_modificacao? `${dateTimeStampToDate(value.data_modificacao)} - ${dateTimeStampToHour(value.data_modificacao)}` : "Nenhuma"}</td>
+                                    <td className="px-2 py-2 text-gray-600">
+                                        {value.data_modificacao ? `${value.usuario_modificador?.nome ?? ""} - ${dateTimeStampToDate(value.data_modificacao)} - ${dateTimeStampToHour(value.data_modificacao)}` : "Nenhuma"}
+                                    </td>
                                     <td className="px-2 py-2 cursor-pointer hover:underline text-center">
                                         <DropdownMenuCmpnt key={index}
                                             data={value} nav={nav} setDeleteModal={setDeleteModal}

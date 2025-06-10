@@ -63,7 +63,7 @@ export function FormData(props: rootProps) {
     const { children, className } = props
 
     return (
-        <form onSubmit={(e) => e.preventDefault()} className={classNames("flex flex-col space-y-2 border border-slate-300 p-4 rounded-md shadow-md", className)}>
+        <form onSubmit={(e) => e.preventDefault()} className={classNames("border border-slate-300 p-4 rounded-md shadow-md", className)}>
             {children}
         </form>
     )

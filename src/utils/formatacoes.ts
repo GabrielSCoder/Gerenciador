@@ -17,3 +17,13 @@ export const dateTimeStampToHour = (dt: any) => {
 
     return formatada
 }
+
+export function convertSimpleDate(input: string): string {
+    const [year, month, day] = input.split("-");
+    return `${day}/${month}/${year}`;
+}
+
+export function formatToISO(date: string): string {
+    const [day, month, year] = date.split('/');
+    return `${year}-${month}-${day}`;
+}

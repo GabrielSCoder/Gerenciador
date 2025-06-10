@@ -8,6 +8,7 @@ import Alert from "../../components/Alert";
 import { useToastRequest } from "../../hooks/useToastRequest";
 import ClienteNaoEncontrado from "./NaoEncontrado";
 import ClienteConcluido from "./Concluido";
+import { convertSimpleDate, formatToISO } from "../../utils/formatacoes";
 
 export default function CriarCliente() {
 
@@ -19,7 +20,8 @@ export default function CriarCliente() {
             telefone2: null,
             telefone_adicional: false,
             indentificacao: "",
-            numero: ""
+            numero: "",
+            data_nascimento : ""
         }
     })
 
@@ -33,9 +35,8 @@ export default function CriarCliente() {
 
     const handle = async (data: any) => {
         try {
-            // setLoading(true)
             if (id && parseInt(id, 10)) {
-                const resp = await updateCliente({ ...data, id: id });
+                const resp = await updateCliente({ ...data, id: id, data_nascimento: formatToISO(data.data_nascimento)});
                 setOptConcluida(true)
                 return resp;
             } else {
@@ -73,7 +74,8 @@ export default function CriarCliente() {
                     telefone2: cliente.telefone2 || "",
                     indentificacao: cliente.indentificacao || "",
                     numero: cliente.numero || "",
-                    telefone_adicional: cliente.telefone2 ? true : false
+                    telefone_adicional: cliente.telefone2 ? true : false,
+                    data_nascimento: convertSimpleDate(cliente.data_nascimento)
                 });
                 setCadastroLimpo({ limpo: false, nome: cliente.nome })
             } catch (error: any) {
@@ -91,7 +93,7 @@ export default function CriarCliente() {
     }, [])
 
     if (erroBusca) {
-        return <ClienteNaoEncontrado />
+        return <ClienteNaoEncontrado elemento="Cliente" />
     }
 
     if (optConcluida) {
@@ -111,7 +113,7 @@ export default function CriarCliente() {
                 texto={!cadastroLimpo.limpo ? `As informações do cliente ${cadastroLimpo.nome} serão atualizadas` : "Deseja salvar?"}
                 setState={setModalConfirmacao}
                 titulo={cadastroLimpo.limpo ? "Deseja salvar?" : "Deseja modificar?"}
-                typeBtn={"delete"}
+                typeBtn={"confirm"}
                 handle={hd}
                 pending={loading}
                 openState={modalConfirmacao}

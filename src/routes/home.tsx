@@ -2,10 +2,12 @@ import { lazy } from "react";
 import ConsultaForm from "../templates/ConsultaForm";
 import CriarCliente from "../pages/Cliente/CriarCliente";
 import ListaCliente from "../pages/Cliente/ListaClientes";
+import VisualizarCliente from "../pages/Cliente/Visualizar";
+import CriarConsulta from "../pages/Consulta/CriarConsulta";
 
 
 const HomeLayout: React.LazyExoticComponent<any> = lazy(() => import("../layouts/HomeLayout"))
-const HomePage : React.LazyExoticComponent<any> = lazy(() => import("../pages/Home"))
+const HomePage: React.LazyExoticComponent<any> = lazy(() => import("../pages/Home"))
 
 const homeRoutes =
 {
@@ -19,16 +21,23 @@ const homeRoutes =
         },
         {
             path: "/consulta",
-            element: <ConsultaForm />
+            element: <CriarConsulta />
         },
-        
+        {
+            path: "/consulta/:id",
+            element: <CriarConsulta />
+        },
         {
             path: "/cliente",
             element: <CriarCliente />
         },
         {
-            path: "/cliente/:id",
+            path: "/cliente/editar/:id",
             element: <CriarCliente />
+        },
+        {
+            path: "/cliente/:id",
+            element: <VisualizarCliente />
         },
         {
             path: "/cliente/lista",
