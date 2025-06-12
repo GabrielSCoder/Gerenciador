@@ -93,7 +93,7 @@ export default function ListaCliente() {
     }
 
     const getUsers = async () => {
-        const dt = await getUsuarioSelect({pesquisa : ""})
+        const dt = await getUsuarioSelect({ pesquisa: "" })
         if (dt.data.success) {
             setUsers(dt.data.dados)
         }
@@ -159,14 +159,16 @@ export default function ListaCliente() {
 
     if (!data || !users) {
         return (
-            <h2 className="text-black">Carregando</h2>
+            <div className="">
+                <h2 className="text-black">Carregando</h2>
+            </div>
         )
     }
 
     return (
         <div className="flex flex-col gap-4">
             <Filtros control={control} register={register} usuarios={users} formState={formState} setValue={setValue} />
-            <div className="overflow-x-auto bg-white rounded-md shadow-md p-4 px-10 min-h-[487px]">
+            <div className="overflow-x-auto bg-white rounded-md shadow-md p-4 px-10 h-[487px]">
                 {!loading ? (
                     <table className="table-fixed w-full text-sm text-left border-collapse">
                         <thead className="text-black border-b">
@@ -208,7 +210,9 @@ export default function ListaCliente() {
                         </tbody>
                     </table>
                 ) : (
-                    <h2>Carregando</h2>
+                    <div className="flex items-center justify-center h-full ">
+                        <h2 className="text-black">Carregando</h2>
+                    </div>
                 )}
 
             </div>

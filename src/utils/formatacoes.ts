@@ -27,3 +27,9 @@ export function formatToISO(date: string): string {
     const [day, month, year] = date.split('/');
     return `${year}-${month}-${day}`;
 }
+
+export function parsePreco(preco: string): number {
+  const cleaned = preco.replace(/[R$\s.]/g, "").replace(",", ".");
+  const value = parseFloat(cleaned);
+  return isNaN(value) ? 0 : value;
+}

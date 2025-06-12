@@ -40,7 +40,7 @@ export default function CriarCliente() {
                 setOptConcluida(true)
                 return resp;
             } else {
-                const resp = await postCliente({ ...data });
+                const resp = await postCliente({ ...data, data_nascimento: formatToISO(data.data_nascimento) });
                 setOptConcluida(true)
                 return resp;
             }

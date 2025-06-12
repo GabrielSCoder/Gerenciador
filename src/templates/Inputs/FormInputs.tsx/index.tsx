@@ -5,6 +5,7 @@ import { InputMask } from "@react-input/mask";
 import { NumericFormat } from 'react-number-format';
 import { Combobox, ComboboxOptions, ComboboxInput, ComboboxOption, ComboboxButton } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { Controller } from "react-hook-form";
 
 type props = {
     name: string
@@ -185,56 +186,77 @@ type Option = {
     name: string;
 };
 
-function DynamicSelect(props: { pesquisa: string, setPesquisa: any, selecionado: any, setSelecionado: any, dados: any[] }) {
+function DynamicSelect(props: { pesquisa: string, setPesquisa: any, selecionado: any, setSelecionado: any, dados: any[], divStyle?: string } & props) {
 
     const [query, setQuery] = useState('')
-    const {dados, pesquisa, selecionado, setPesquisa, setSelecionado} = props
+    const { dados, pesquisa, selecionado, setPesquisa, setSelecionado, register, name, className, labelClassName, required, label, placeholder, divStyle } = props
 
     const filteredPeople =
         query === ''
             ? dados
             : dados.filter((person) => {
-                return person.name.toLowerCase().includes(query.toLowerCase())
-    })
+                return person.nome.toLowerCase().includes(query.toLowerCase())
+            })
 
-    return (
-        <div className="">
-            <Combobox value={selecionado} onChange={(value) => setSelecionado(value)} onClose={() => setQuery('')}>
-                <div className="relative">
-                    <ComboboxInput
-                        className={classNames(
-                            'w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-white border border-slate-300',
-                            'focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25 border border-slate-300'
-                        )}
-                        displayValue={(person) => person?.nome}
-                        onChange={(event) => setQuery(event.target.value)}
-                    />
-                    <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-                        <ChevronDownIcon className="size-4 fill-white/60 group-data-hover:fill-white" />
-                    </ComboboxButton>
-                </div>
+    const comboinpt = (
+        <Combobox value={selecionado} onChange={(value) => setSelecionado(value)} onClose={() => setQuery('')}>
+            <div className="relative">
+                <ComboboxInput
+                    className={classNames(
+                        'w-full rounded-lg border border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-800',
+                        'focus:outline-none focus:ring-2 focus:ring-slate-black'
+                    )}
+                    displayValue={(person: any) => person?.nome}
+                    placeholder={placeholder || 'Pesquise...'}
+                    onChange={(event) => setQuery(event.target.value)}
+                />
+                <ComboboxButton className="absolute inset-y-0 right-0 flex items-center px-2">
+                    <ChevronDownIcon className="w-4 h-4 text-slate-500 group-hover:text-slate-700" />
+                </ComboboxButton>
 
                 <ComboboxOptions
                     anchor="bottom"
                     transition
                     className={classNames(
-                        'w-(--input-width) rounded-xl border border-white/5 bg-white/5 p-1 [--anchor-gap:--spacing(1)] empty:invisible',
+                        'w-(--input-width) rounded-xl border border-slate-300  bg-white p-1 [--anchor-gap:--spacing(1)] empty:invisible',
                         'transition duration-100 ease-in data-leave:data-closed:opacity-0'
                     )}
                 >
-                    {filteredPeople.map((person) => (
-                        <ComboboxOption
-                            key={person.id}
-                            value={person}
-                            className="group flex cursor-default items-center gap-2 rounded-lg px-3 py-1.5 select-none data-focus:bg-white/10"
-                        >
-                            <CheckIcon className="invisible size-4 fill-white group-data-selected:visible" />
-                            <div className="text-sm/6 text-white">{person.name}</div>
-                        </ComboboxOption>
-                    ))}
+                    {filteredPeople.length === 0 ? (
+                        <div className="p-2 text-sm text-slate-500">Nenhum resultado encontrado.</div>
+                    ) : (
+                        filteredPeople.map((person) => (
+                            <ComboboxOption
+                                key={person.id}
+                                value={person}
+                                className="group flex cursor-default select-none items-center gap-2 rounded-md px-3 py-2 text-sm text-slate-800 hover:bg-slate-100 data-[focus]:bg-slate-100"
+                            >
+                                <CheckIcon className="invisible h-4 w-4 text-slate-600 group-data-selected:visible" />
+                                {person.nome}
+                            </ComboboxOption>
+                        ))
+                    )}
                 </ComboboxOptions>
-            </Combobox>
-        </div>
+            </div>
+        </Combobox>
+    )
+
+    return (
+
+        <>
+            {!label ? (
+                <div className={divStyle}>
+                    {comboinpt}
+                </div>
+            ) : (
+                <div className={divStyle}>
+                    <label className={labelClassName}> {required ? (<>{label}<strong className="text-red-500"> *</strong></>) : label}
+                        {comboinpt}
+                    </label >
+                </div>
+            )}
+        </>
+
     )
 }
 
@@ -289,47 +311,40 @@ const DteTime = (props: props) => {
     )
 }
 
-const MoneyInput = (props: props) => {
-    const { name, register, className, label, labelClassName, required, placeholder } = props;
-
+const MoneyInput = ({ control, name, label, labelClassName, required, placeholder, className }: any) => {
     return (
-        <>
-            {label ? (
+        <div>
+            {label && (
                 <label className={labelClassName}>
-                    {required ? (
-                        <>
-                            {label}
-                            <strong className="text-red-500"> *</strong>
-                        </>
-                    ) : (
-                        label
-                    )}
+                    {label}
+                    {required && <strong className="text-red-500"> *</strong>}
+                </label>
+            )}
+
+            <Controller
+                name={name}
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
                     <NumericFormat
+                        {...field}
+                        value={field.value ?? ""}
                         thousandSeparator="."
                         decimalSeparator=","
                         prefix="R$ "
                         decimalScale={2}
                         fixedDecimalScale
                         allowNegative={false}
-                        className={classNames("block border border-slate-300 rounded-md px-2 w-full text-[15px] h-[40px]", className)}
                         placeholder={placeholder || "R$ 0,00"}
-                        {...(register ? register(name) : {})}
+                        className={classNames(
+                            "block border border-slate-300 rounded-md px-2 w-full text-[15px] h-[40px]",
+                            className
+                        )}
+                        onValueChange={(values) => field.onChange(values.value)}
                     />
-                </label>
-            ) : (
-                <NumericFormat
-                    thousandSeparator="."
-                    decimalSeparator=","
-                    prefix="R$ "
-                    decimalScale={2}
-                    fixedDecimalScale
-                    allowNegative={false}
-                    className={classNames("block border border-slate-300 rounded-md px-2 w-full text-[15px] h-[40px]", className)}
-                    placeholder={placeholder || "R$ 0,00"}
-                    {...(register ? register(name) : {})}
-                />
-            )}
-        </>
+                )}
+            />
+        </div>
     );
 };
 
