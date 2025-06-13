@@ -4,6 +4,8 @@ import CriarCliente from "../pages/Cliente/CriarCliente";
 import ListaCliente from "../pages/Cliente/ListaClientes";
 import VisualizarCliente from "../pages/Cliente/Visualizar";
 import CriarConsulta from "../pages/Consulta/CriarConsulta";
+import VisualizarConsulta from "../pages/Consulta/VisualizarConsulta";
+import CalendarioMensal from "../pages/Consulta/ListaConsultas";
 
 
 const HomeLayout: React.LazyExoticComponent<any> = lazy(() => import("../layouts/HomeLayout"))
@@ -24,12 +26,16 @@ const homeRoutes =
             element: <CriarConsulta />
         },
         {
-            path: "/consulta/:id",
+            path: "/consulta/editar/:id",
             element: <CriarConsulta />
         },
         {
+              path: "/consulta/:id",
+            element: <VisualizarConsulta />
+        },
+        {
             path: "/cliente",
-            element: <CriarCliente />
+            element: <CalendarioMensal />
         },
         {
             path: "/cliente/editar/:id",

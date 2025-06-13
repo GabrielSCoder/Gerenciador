@@ -311,6 +311,26 @@ const DteTime = (props: props) => {
     )
 }
 
+const OnlyDate = (props: props) => {
+
+    const { name, register, className, label, labelClassName, required, placeholder } = props
+
+    return (
+        <>
+            {label ? (
+                <label className={labelClassName}> {required ? (<>{label}<strong className="text-red-500"> *</strong></>) : label}
+                    <input type="date" {...register && register(name)} className={classNames("block border border-slate-300 h-[40px] w-full rounded-md px-2", className)}
+                        placeholder={placeholder} />
+                </label>
+            )
+                : (
+                    <input type="date" {...register && register(name)} className={classNames("block border border-slate-300 h-[40px] w-full rounded-md px-2", className)}
+                        placeholder={placeholder} />
+                )}
+        </>
+    )
+}
+
 const MoneyInput = ({ control, name, label, labelClassName, required, placeholder, className }: any) => {
     return (
         <div>
@@ -333,7 +353,6 @@ const MoneyInput = ({ control, name, label, labelClassName, required, placeholde
                         decimalSeparator=","
                         prefix="R$ "
                         decimalScale={2}
-                        fixedDecimalScale
                         allowNegative={false}
                         placeholder={placeholder || "R$ 0,00"}
                         className={classNames(
@@ -355,6 +374,7 @@ FormInput.Number = Number
 FormInput.Date = Dte
 FormInput.real = MoneyInput
 FormInput.DateAndTime = DteTime
+FormInput.Date = OnlyDate
 FormInput.DynSelect = DynamicSelect
 
 export default FormInput
