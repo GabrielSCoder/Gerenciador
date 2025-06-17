@@ -1,89 +1,227 @@
-import {
-  startOfMonth,
-  endOfMonth,
-  format,
-  addMonths,
-  subMonths,
-  isSameDay,
-  isSameMonth,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-} from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { deleteCliente, getClientePagination } from "../../services/cliente";
+import Filtros from "../../templates/Filtros";
+import { useForm, useWatch } from "react-hook-form";
+import useDebounce from "../../hooks/useDebounce";
+import { dateTimeStampToDate, dateTimeStampToHour } from "../../utils/formatacoes";
+import { getUsuarioSelect } from "../../services/usuario";
+import FiltroRodape from "../../templates/Filtros/FiltroRodape";
+import usePaginacao from "../../hooks/usePaginacao";
+import { SlOptionsVertical } from "react-icons/sl";
+import DropdownMenuCmpnt from "../../components/DropdownMenuCmpnt";
+import { useNavigate } from "react-router-dom";
+import { useToastRequest } from "../../hooks/useToastRequest";
 
-export default function CalendarioConsultas() {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const diasVisiveis = eachDayOfInterval({
-    start: startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 0 }), // domingo
-    end: endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 0 }),       // sábado
-  });
+export default function ListaConsulta() {
 
-  const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
-  const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+    const { avancar, paginaAtual, retroceder, paginaSetter, setTotalPaginas, totalPaginas, setTotalRegistros, totalRegistros } = usePaginacao()
+    const nav = useNavigate()
+    const [loading, setLoading] = useState(true)
+    const [data, setData] = useState([])
+    const [deleting, setDeleting] = useState(false)
+    const [deleteModal, setDeleteModal] = useState(false)
+    const [users, setUsers] = useState([])
+    const [src, setSrc] = useState("")
+    const [tamanhoPagina, setTamanhoPagina] = useState<number>(10)
+    const { control, register, formState, setValue } = useForm({
+        defaultValues: {
+            pesquisa: "",
+            data: "",
+            fdata: "",
+            usuario: null,
+            ordem: "DESC",
+            mod: "data_criacao"
+        }
+    })
 
-  return (
-    <div className="max-w-5xl mx-auto mt-10 grid grid-cols-3 gap-4">
-      <div className="col-span-2 bg-white rounded-lg shadow p-4 border border-gray-200">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">
-            {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
-          </h2>
-          <div className="space-x-2">
-            <button onClick={handlePrevMonth} className="px-2 py-1 border rounded hover:bg-gray-100">◀</button>
-            <button onClick={handleNextMonth} className="px-2 py-1 border rounded hover:bg-gray-100">▶</button>
-          </div>
+
+    const search = useWatch({ control, name: "pesquisa" })
+    const initDate = useWatch({ control, name: "data" })
+    const finalDate = useWatch({ control, name: "fdata" })
+    const usuarioId = useWatch({ control, name: "usuario" })
+    const orda = useWatch({ control, name: "ordem" })
+    const mod = useWatch({ control, name: "mod" })
+
+    const formatToISO = (data: string) => {
+        if (!data) return null;
+        const [dia, mes, ano] = data.split("/");
+        if (dia && mes && ano) {
+            return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+        }
+        return null;
+    };
+
+    const firstData = async () => {
+
+        const dti = formatToISO(initDate)
+        const dtf = formatToISO(finalDate)
+
+        const dt = await getClientePagination({
+            pesquisa: src, numeroPagina: Number(paginaAtual), tamanhoPagina: Number(tamanhoPagina), dataInicio: dti, dataFim: dtf,
+            criador: usuarioId ? parseInt(usuarioId, 10) : null, ordem: orda, modificador: mod
+        })
+
+        if (dt.data.success) {
+            setData(dt.data.dados.registros)
+            paginaSetter(dt.data.dados.pagina_atual <= dt.data.dados.quantidade_paginas ? dt.data.dados.pagina_atual : paginaAtual)
+            setTotalPaginas(dt.data.dados.quantidade_paginas)
+            setTotalRegistros(dt.data.dados.quantidade_registros)
+            if (dt.data.dados.quantidade_registros > 1 && dt.data.dados.pagina_atual > dt.data.dados.quantidade_paginas) paginaSetter(dt.data.dados.quantidade_paginas)
+        }
+
+        setLoading(false)
+    }
+
+    const getData = async () => {
+
+        const dti = formatToISO(initDate)
+        const dtf = formatToISO(finalDate)
+
+        const dt = await getClientePagination({
+            pesquisa: src, numeroPagina: Number(paginaAtual), tamanhoPagina: Number(tamanhoPagina), dataInicio: dti, dataFim: dtf,
+            criador: usuarioId ? parseInt(usuarioId, 10) : null, ordem: orda, modificador: mod
+        })
+
+        if (dt.data.success) {
+            setData(dt.data.dados.registros)
+            paginaSetter(dt.data.dados.pagina_atual <= dt.data.dados.quantidade_paginas ? dt.data.dados.pagina_atual : paginaAtual)
+            setTotalPaginas(dt.data.dados.quantidade_paginas)
+            setTotalRegistros(dt.data.dados.quantidade_registros)
+            if (dt.data.dados.quantidade_registros > 1 && dt.data.dados.pagina_atual > dt.data.dados.quantidade_paginas) paginaSetter(dt.data.dados.quantidade_paginas)
+        }
+    }
+
+    const getUsers = async () => {
+        const dt = await getUsuarioSelect({ pesquisa: "" })
+        if (dt.data.success) {
+            setUsers(dt.data.dados)
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteCliente(id)
+            await getData()
+        } catch (error: any) {
+            throw error.response.data.dados
+        } finally {
+            setDeleting(false)
+            setDeleteModal(false)
+        }
+    }
+
+    // const notify = (id: number) => {
+    //     toast.promise(handleDelete(id), {
+    //         pending: 'Deletando...',
+    //         success: 'Cliente deletado com sucesso!',
+    //         error: {
+    //         render({ data }) {
+    //           const err = data as any;
+    //           return typeof err === "string" ? err : err.message || "Erro inesperado";
+    //         }
+    //       }
+    //     })
+    // }
+
+    const { notify } = useToastRequest(handleDelete, {
+        pending: 'Deletando...',
+        success: 'Cliente deletado com sucesso!',
+        error: 'Erro ao deletar cliente'
+    });
+
+    const hd = (id: number) => {
+        setDeleting(true)
+        notify(id)
+    }
+
+
+
+    const handleDebounce = useDebounce(() => setSrc(search), 500)
+    // const debouncedNotify = useDebouncedCallback(notify, 100)
+
+    useEffect(() => {
+        firstData()
+    }, [])
+
+    useEffect(() => {
+        handleDebounce()
+    }, [search])
+
+    useEffect(() => {
+        if (!loading)
+            getData()
+    }, [src, initDate, finalDate, usuarioId, tamanhoPagina, paginaAtual, orda, mod])
+
+    useEffect(() => {
+        getUsers()
+    }, [])
+
+    if (!data || !users) {
+        return (
+            <div className="">
+                <h2 className="text-black">Carregando</h2>
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex flex-col gap-4">
+            <Filtros control={control} register={register} usuarios={users} formState={formState} setValue={setValue} />
+            <div className="overflow-x-auto bg-white rounded-md shadow-md p-4 px-10 h-[487px]">
+                {!loading ? (
+                    <table className="table-fixed w-full text-sm text-left border-collapse">
+                        <thead className="text-black border-b">
+                            <tr>
+
+                                <th className="min-w-[150px] px-2 py-3">Nome</th>
+                                <th className="min-w-[140px] px-2 py-3">Identificação</th>
+                                <th className="min-w-[200px] px-2 py-3">Endereço</th>
+                                <th className="min-w-[90px] px-2 py-3">Telefone</th>
+                                <th className="min-w-[200px] px-2 py-3">Cadastro</th>
+                                <th className="min-w-[200px] px-2 py-3">Última Modificação</th>
+                                <th className="w-16 px-2 py-3">Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((value: any, index: number) => (
+                                <tr key={index} className="border-b border-slate-300 hover:bg-gray-100" >
+
+                                    <td className="px-2 py-2 text-black font-medium text-base">{value.nome}</td>
+                                    <td className="px-2 py-2 text-gray-600">{value.indentificacao}</td>
+                                    <td className="px-2 py-2 truncate text-gray-600">{value.endereco}, {value.numero}</td>
+                                    <td className="px-2 py-2 text-gray-600">{value.telefone}</td>
+                                    <td className="px-2 py-2 text-gray-600 truncate">
+                                        {value.usuario_criador?.nome ?? "Desconhecido"} - {dateTimeStampToDate(value.data_criacao)} - {dateTimeStampToHour(value.data_criacao)}
+                                    </td>
+                                    <td className="px-2 py-2 text-gray-600">
+                                        {value.data_modificacao ? `${value.usuario_modificador?.nome ?? ""} - ${dateTimeStampToDate(value.data_modificacao)} - ${dateTimeStampToHour(value.data_modificacao)}` : "Nenhuma"}
+                                    </td>
+                                    <td className="px-2 py-2 cursor-pointer hover:underline text-center">
+                                        <DropdownMenuCmpnt key={index}
+                                            data={value} nav={nav} setDeleteModal={setDeleteModal}
+                                            deleteModal={deleteModal} handleFunc={hd}
+                                            pending={deleting}>
+                                            <SlOptionsVertical size={20} className="w-full text-black hover:text-blue-500" />
+                                        </DropdownMenuCmpnt>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <div className="flex items-center justify-center h-full ">
+                        <h2 className="text-black">Carregando</h2>
+                    </div>
+                )}
+
+            </div>
+            <div>
+                <FiltroRodape paginaAtual={paginaAtual} quantidadePaginas={totalPaginas} quantidadeRegistros={totalRegistros}
+                    quantidadePorPaginas={tamanhoPagina} setTamanhoPagina={setTamanhoPagina} setPaginaAtual={paginaSetter} avancar={avancar} retroceder={retroceder} />
+            </div>
+
         </div>
 
-        {/* Dias da semana */}
-        <div className="grid grid-cols-7 gap-2 text-center font-medium text-gray-600">
-          {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"].map((dia) => (
-            <div key={dia}>{dia}</div>
-          ))}
-        </div>
-
-        {/* Dias do mês */}
-        <div className="grid grid-cols-7 gap-2 mt-2 text-center">
-          {diasVisiveis.map((dia) => {
-            const isMesAtual = isSameMonth(dia, currentMonth);
-            const isSelecionado = isSameDay(dia, selectedDate);
-
-            return (
-              <button
-                key={dia.toISOString()}
-                onClick={() => setSelectedDate(dia)}
-                className={`
-                  h-20 rounded-md border flex items-start justify-start p-1 text-sm
-                  ${isSelecionado ? "bg-blue-100 border-blue-500" : "border-gray-200"}
-                  ${isMesAtual ? "text-gray-900" : "text-gray-400"}
-                  hover:bg-gray-100
-                `}
-              >
-                {format(dia, "d")}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Eventos do dia */}
-      <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="text-lg font-semibold">Consultas do Dia</h3>
-          <button className="text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
-            + Nova
-          </button>
-        </div>
-
-        {/* Aqui entrariam os dados das consultas */}
-        <div className="space-y-2 text-sm text-gray-700">
-          <p><strong>{format(selectedDate, "d 'de' MMMM", { locale: ptBR })}</strong></p>
-          <p>Nenhuma consulta cadastrada.</p>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }

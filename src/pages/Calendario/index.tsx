@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getConsulta } from "../../services/consulta";
 import NaoEncontrado from "../Cliente/NaoEncontrado";
 
-export default function VisualizarConsulta() {
+export default function VisualizarCalendario() {
 
     const [consulta, setDados] = useState<any>({})
     const [loading, setLoading] = useState(true)
