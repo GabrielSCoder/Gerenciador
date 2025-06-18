@@ -38,7 +38,7 @@ const homeRoutes =
         },
         {
             path: "/cliente",
-            element: <CriarConsulta />
+            element: <CriarCliente />
         },
         {
             path: "/cliente/editar/:id",

@@ -6,6 +6,7 @@ import { NumericFormat } from 'react-number-format';
 import { Combobox, ComboboxOptions, ComboboxInput, ComboboxOption, ComboboxButton } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { Controller } from "react-hook-form";
+import { getTodayFormatted } from "../../../utils/formatacoes";
 
 type props = {
     name: string
@@ -112,79 +113,50 @@ function TextArea(props: any & React.TextareaHTMLAttributes<HTMLTextAreaElement>
     );
 }
 
-function SelectOption(props: any) {
-    const {
-        name, dados, register, className, label, labelClassName,
-        valor, formState, setValue, defaultOpt, defaultOptTitle, required
-    } = props;
+function SelectOption({
+    name, dados, register, className, label, labelClassName,
+    valor, formState, setValue, defaultOpt, defaultOptTitle, required
+}: any) {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setValue(name, e.target.value);
+    };
 
-    return (
+    const renderOptions = () => (
         <>
-            {label ? (
-                <label className={labelClassName}>
-                    {required ? (
-                        <>
-                            {label}
-                            <strong className="text-red-500"> *</strong>
-                        </>
-                    ) : label}
-                    <select
-                        {...(register && register(name))}
-                        className={classNames("bg-white rounded-md w-full border border-slate-300 text-[15px] h-[40px] block px-1", className)}
-                        onChange={(e) => {
-                            const v = e.target.value;
-                            if (v == "padrao" && !defaultOpt) {
-                                const dfVal = formState.defaultValue?.[name] ?? "";
-                                setValue(name, dfVal);
-                            } else {
-                                setValue(name, v);
-                            }
-                        }}
-                    >
-                        {defaultOpt && (
-                            <option value="padrao">{defaultOptTitle || "Selecione"}</option>
-                        )}
-                        {dados?.map((item: any) => (
-                            <option key={item.id} value={
-                                valor === "id" ? item.id :
-                                    valor === "nome" ? item.nome :
-                                        item.val
-                            }>
-                                {item.nome}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-            ) : (
-                <select
-                    {...(register && register(name))}
-                    className={classNames("bg-white rounded-md w-full border border-slate-300 text-[15px] h-[40px] block px-1", className)}
-                    onChange={(e) => {
-                        const v = e.target.value;
-                        if (v == "padrao" && !defaultOpt) {
-                            const dfVal = formState.defaultValue?.[name] ?? "";
-                            setValue(name, dfVal);
-                        } else {
-                            setValue(name, v);
-                        }
-                    }}
-                >
-                    {defaultOpt && (
-                        <option value="padrao">{defaultOptTitle || "Selecione"}</option>
-                    )}
-                    {dados?.map((item: any) => (
-                        <option key={item.id}>{item.nome}</option>
-                    ))}
-                </select>
+            {defaultOpt && (
+                <option value="">{defaultOptTitle || "Todos"}</option>
             )}
+            {dados?.map((item: any) => (
+                <option key={item.id} value={
+                    valor === "id" ? item.id :
+                        valor === "nome" ? item.nome :
+                            item.val
+                }>
+                    {item.nome}
+                </option>
+            ))}
         </>
     );
+
+    const baseSelect = (
+        <select
+            {...(register && register(name))}
+            className={classNames("bg-white rounded-md w-full border border-slate-300 text-[15px] h-[40px] block px-1", className)}
+            onChange={handleChange}
+        >
+            {renderOptions()}
+        </select>
+    );
+
+    return label ? (
+        <label className={labelClassName}>
+            {required ? <>{label}<strong className="text-red-500"> *</strong></> : label}
+            {baseSelect}
+        </label>
+    ) : baseSelect;
 }
 
-type Option = {
-    id: number;
-    name: string;
-};
+
 
 function DynamicSelect(props: { pesquisa: string, setPesquisa: any, selecionado: any, setSelecionado: any, dados: any[], divStyle?: string } & props) {
 
@@ -203,8 +175,9 @@ function DynamicSelect(props: { pesquisa: string, setPesquisa: any, selecionado:
             <div className="relative">
                 <ComboboxInput
                     className={classNames(
-                        'w-full rounded-lg border border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-800',
-                        'focus:outline-none focus:ring-2 focus:ring-slate-black'
+                        'w-full h-[40px] px-2 text-[15px] font-normal rounded-md border border-slate-300 bg-white placeholder:italic placeholder:text-sm',
+                        'focus:outline-none focus:ring-2 focus:ring-blue-400',
+                        className
                     )}
                     displayValue={(person: any) => person?.nome}
                     placeholder={placeholder || 'Pesquise...'}
@@ -245,14 +218,13 @@ function DynamicSelect(props: { pesquisa: string, setPesquisa: any, selecionado:
 
         <>
             {!label ? (
-                <div className={divStyle}>
-                    {comboinpt}
-                </div>
+                <div className={divStyle}>{comboinpt}</div>
             ) : (
-                <div className={divStyle}>
-                    <label className={labelClassName}> {required ? (<>{label}<strong className="text-red-500"> *</strong></>) : label}
-                        {comboinpt}
-                    </label >
+                <div className={classNames("flex flex-col gap-0", divStyle)}>
+                    <label className={classNames("text-sm font-semibold", labelClassName)}>
+                        {label} {required && <strong className="text-red-500"> *</strong>}
+                    </label>
+                    {comboinpt}
                 </div>
             )}
         </>
@@ -278,13 +250,17 @@ const Dte = (props: props) => {
         <>
             {label ? (
                 <label className={labelClassName}> {required ? (<>{label}<strong className="text-red-500"> *</strong></>) : label}
-                    <InputMask mask="dd/mm/yyyy" replacement={{ d: /\d/, m: /\d/, y: /\d/ }}  {...register && register(name)} className={classNames("block border border-slate-300 h-[40px] w-full rounded-md px-2", className)}
-                        placeholder={placeholder} />
+                    <InputMask mask="dd/mm/yyyy"
+                        replacement={{ d: /\d/, m: /\d/, y: /\d/ }}
+                        {...register && register(name)} className={classNames("block border border-slate-300 h-[40px] w-full rounded-md px-2", className)}
+                        placeholder={placeholder}
+                        defaultValue={getTodayFormatted()}
+                    />
                 </label>
             )
                 : (
                     <InputMask mask="dd/mm/yyyy" replacement={{ d: /\d/, m: /\d/, y: /\d/ }}  {...register && register(name)} className={classNames("block border border-slate-300 h-[40px] w-full rounded-md px-2", className)}
-                        placeholder={placeholder} />
+                        placeholder={placeholder} defaultValue={getTodayFormatted()} />
                 )}
         </>
 

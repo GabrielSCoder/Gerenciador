@@ -28,13 +28,13 @@ export default function Filtros(props: props) {
                 <FormInput.inputTxt name="pesquisa" register={props.register} control={props.control} placeholder="Pesquisar...." className="placeholder:text-sm text-black font-normal placeholder:italic w-full" label="Pesquisa (Nome, endereço, telefone, Identificação)" labelClassName="text-sm font-semibold col-span-3"
                 />
                 <FormInput.inputSelect name="usuario" control={props.control} register={props.register} dados={props.usuarios} className="h-[40px] text-base w-full font-normal"
-                    label={"Cadastrado por"} labelStyle="text-sm font-semibold col-span-1" formState={props.formState} setValue={props.setValue} valor={"id"} defaultOpt defaultOptTitle={"Todos"} />
+                    label={"Cadastrado por"} labelClassName="text-sm font-semibold col-span-1" formState={props.formState} setValue={props.setValue} valor={"id"} defaultOpt defaultOptTitle={"Todos"} />
 
                 <FormInput.inputSelect name="mod" control={props.control} register={props.register} dados={ss} className="h-[40px] text-base w-full font-normal"
-                    label={"Ordenar por"} labelStyle="text-sm font-semibold col-span-1" valor={"val"} formState={props.formState} setValue={props.setValue} />
+                    label={"Ordenar por"} labelClassName="text-sm font-semibold col-span-1" valor={"val"} formState={props.formState} setValue={props.setValue} />
 
                 <FormInput.inputSelect name="ordem" control={props.control} register={props.register} dados={ord} className="h-[40px] text-base w-full font-normal"
-                    label={"Ordem"} labelStyle="text-sm font-semibold col-span-1" valor={"val"} formState={props.formState} setValue={props.setValue}/>
+                    label={"Ordem"} labelClassName="text-sm font-semibold col-span-1" valor={"val"} formState={props.formState} setValue={props.setValue}/>
 
                 <FormInput.Date name="data" register={props.register} className="border border-slate-300 rounded-md h-[40px] px-2 w-full font-normal" label="Data Início" placeholder="dd/mm/aaaa" labelClassName="col-span-1 font-semibold text-sm"
                 />

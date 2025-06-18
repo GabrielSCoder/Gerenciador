@@ -12,6 +12,6 @@ export async function getConsulta (id : number) {
     return await getRequest("/consulta/" + id)
 }
 
-export async function getPagination (data : any) {
+export async function getConsultaPagination (data : any) {
     return await postRequest("/consulta/pagination", data)
 }
