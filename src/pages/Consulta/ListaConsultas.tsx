@@ -8,7 +8,7 @@ import { getUsuarioSelect } from "../../services/usuario";
 import FiltroRodape from "../../templates/Filtros/FiltroRodape";
 import usePaginacao from "../../hooks/usePaginacao";
 import { SlOptionsVertical } from "react-icons/sl";
-import DropdownMenuCmpnt from "../../components/DropdownMenuCmpnt";
+import { DropdownMenuCmpntConsulta } from "../../components/DropdownMenuCmpnt";
 import { useNavigate } from "react-router-dom";
 import { useToastRequest } from "../../hooks/useToastRequest";
 import FiltroConsulta from "../../templates/Filtros/FiltroConsulta";
@@ -157,7 +157,7 @@ export default function ListaConsulta() {
     useEffect(() => {
         if (!loading)
             paginaSetter(1)
-            getData()
+        getData()
     }, [src, initDate, finalDate, usuarioId, tamanhoPagina, orda, mod, profissionalId, selecionado, initDate, finalDate, initHDate, finalHDate])
 
 
@@ -185,7 +185,7 @@ export default function ListaConsulta() {
                     setValue={setValue} selecionado={selecionado} setSelecionado={setSelecionado} clienteDados={clienteData}
                     pesquisa={undefined} setPesquisa={undefined} />
             ) : (<div className="bg-gray-200 h-[50px] rounded-md shadow-sm"></div>)}
-            
+
             <div className="bg-white flex justify-between gap-4 p-2 rounded-md shadow-sm">
                 <button
                     className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium shadow hover:bg-red-200 transition hover:cursor-pointer"
@@ -210,7 +210,7 @@ export default function ListaConsulta() {
             </div>
             <div className={classNames("overflow-x-auto bg-white rounded-md shadow-md p-4 px-10", filtroVisivel ? "h-[487px]" : "h-[632px]")}>
                 {!loading ? (
-                    <table className="table-fixed w-full text-sm text-left border-collapse">
+                    <table className="table-fixed w-full text-sm text-left border-collapse h-full">
                         <thead className="text-black border-b">
                             <tr>
                                 <th className="min-w-[150px] px-2 py-3">Cliente</th>
@@ -237,8 +237,10 @@ export default function ListaConsulta() {
                                         {value.profissional?.nome}
                                     </td>
                                     <td className="px-2 py-2 text-gray-600">
-                                        {dateTimeStampToDate(value.horario)} -{" "}
-                                        {dateTimeStampToHour(value.horario)}
+                                        {dateTimeStampToDate(value.horario)}
+                                        {dateTimeStampToHour(value.horario) !== "00:00" && (
+                                            <> - {dateTimeStampToHour(value.horario)}</>
+                                        )}
                                     </td>
                                     <td className="px-2 py-2">
                                         <span
@@ -280,7 +282,7 @@ export default function ListaConsulta() {
                                     </td>
 
                                     <td className="px-2 py-2 cursor-pointer hover:underline text-center">
-                                        <DropdownMenuCmpnt
+                                        <DropdownMenuCmpntConsulta
                                             key={index}
                                             data={value}
                                             nav={nav}
@@ -293,7 +295,7 @@ export default function ListaConsulta() {
                                                 size={20}
                                                 className="w-full text-black hover:text-blue-500"
                                             />
-                                        </DropdownMenuCmpnt>
+                                        </DropdownMenuCmpntConsulta>
                                     </td>
                                 </tr>
                             ))}

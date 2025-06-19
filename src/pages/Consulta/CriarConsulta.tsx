@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import ConsultaForm from "../../templates/ConsultaForm";
 import { useParams } from "react-router-dom";
@@ -27,6 +27,7 @@ export default function CriarConsulta() {
     const [selecionadoPagamento, setSelecionadoPagamento] = useState<any | null>(null)
     const [selecionadoStatus, setSelecionadoStatus] = useState<any | null>(null)
     const [selecionadoDoutor, setSelecionadoDoutor] = useState<any | null>(null)
+    const lastValidDateRef = useRef<Date | null>(null);
     const { id } = useParams()
     const { register, control, reset, handleSubmit, setValue } = useForm({
         defaultValues: {
@@ -34,15 +35,15 @@ export default function CriarConsulta() {
             procedimento: "",
             tipo: "",
             preco: "",
-            horario: format(new Date(), "yyyy-MM-dd"),
+            horario: "",
             dente_afetado: "",
             observacoes: "",
             pago: false,
-            horario_marcado : false
+            hora_marcada: false
         }
     })
 
-    const hre = useWatch({control, name : "horario_marcado"})
+
 
     const getUsuarioData = async (dados: any) => {
         try {
@@ -65,11 +66,13 @@ export default function CriarConsulta() {
                     descricao: consulta.descricao,
                     tipo: consulta.tipo,
                     preco: formatPreco(consulta.preco),
-                    horario: formatDatetimeForInput(consulta.horario),
+                    hora_marcada: consulta.hora_marcada,
+                    horario: consulta.hora_marcada ? formatDatetimeForInput(consulta.horario) : format(new Date(consulta.horario), "yyyy-MM-dd"),
                     dente_afetado: consulta.dente_afetado,
                     observacoes: consulta.observacoes,
                     pago: consulta.pago,
-                    procedimento: consulta.procedimento
+                    procedimento: consulta.procedimento,
+
                 })
                 staticsOpt(dataUsuarios, dataClientes, consulta)
             } catch (error: any) {
@@ -83,6 +86,7 @@ export default function CriarConsulta() {
         }
         setLoading(false)
     }
+
 
     const staticsOpt = (dataUsuarios: any[], dataClientes: any[], consulta: any) => {
         console.log(dataUsuarios, dataClientes)
@@ -124,7 +128,7 @@ export default function CriarConsulta() {
                 status: selecionadoStatus?.value ?? null,
                 profissional_id: selecionadoDoutor?.id ?? null,
                 preco: precoTratado,
-                horario : formatHorarioParaBackend(data.horario)
+                horario: formatHorarioParaBackend(data.horario)
             };
 
             if (id && parseInt(id, 10)) {
@@ -159,9 +163,40 @@ export default function CriarConsulta() {
         getClientes()
     }, [])
 
-    useEffect(( ) => {
-        !hre ? setValue("horario", format(new Date(), "yyyy-MM-dd")) : setValue("horario", format(new Date(), "yyyy-MM-dd'T'HH:mm"))
-    }, [hre])
+
+    const hr = useWatch({ control, name: "horario" })
+    const hre = useWatch({ control, name: "hora_marcada" })
+
+    useEffect(() => {
+        if (!hr) return;
+
+        if (hr.includes("T")) {
+
+            lastValidDateRef.current = new Date(hr);
+        } else {
+
+            const [year, month, day] = hr.split("-").map(Number);
+            const existing = lastValidDateRef.current ?? new Date();
+            lastValidDateRef.current = new Date(
+                year,
+                month - 1,
+                day,
+                existing.getHours(),
+                existing.getMinutes()
+            );
+        }
+    }, [hr]);
+
+    useEffect(() => {
+        const baseDate = lastValidDateRef.current ?? new Date();
+
+        const formatted = hre
+            ? format(baseDate, "yyyy-MM-dd'T'HH:mm")
+            : format(baseDate, "yyyy-MM-dd");
+
+        setValue("horario", formatted);
+    }, [hre]);
+
 
     if (erroBusca) {
         return <ClienteNaoEncontrado elemento="Consulta" />

@@ -8,7 +8,7 @@ import { getUsuarioSelect } from "../../services/usuario";
 import FiltroRodape from "../../templates/Filtros/FiltroRodape";
 import usePaginacao from "../../hooks/usePaginacao";
 import { SlOptionsVertical } from "react-icons/sl";
-import DropdownMenuCmpnt from "../../components/DropdownMenuCmpnt";
+import {DropdownMenuCmpnt} from "../../components/DropdownMenuCmpnt";
 import { useNavigate } from "react-router-dom";
 import { useToastRequest } from "../../hooks/useToastRequest";
 

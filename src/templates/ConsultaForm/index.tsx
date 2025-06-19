@@ -67,7 +67,7 @@ export default function ConsultaForm(props: props) {
                         ) : (
                             <FormInput.Date register={register} name="horario" control={control} label="Data marcada" labelClassName="col-span-3 text-lg" placeholder="" />
                         )}
-                        <Input.Switch name="horario_marcado" control={control} label="Horário marcado" labelStyle="col-span-1" />
+                        <Input.Switch name="hora_marcada" control={control} label="Horário marcado" labelStyle="col-span-1" />
                     </FormData>
                     <FormData className="flex flex-col gap-4 bg-white w-1/2 p-2 min-h-[600px]">
 
