@@ -135,7 +135,7 @@ export default function CalendarioConsultas() {
                         {format(selectedDate, "d 'de' MMMM", { locale: ptBR })}
                     </h3>
                     <button
-                        onClick={() => navigate("/consulta")}
+                        onClick={() => navigate("/consulta?date=" + format(selectedDate, "yyyy'-'MM'-'d", { locale: ptBR }))}
                         className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1.5 rounded-lg hover:cursor-pointer"
                     >
                         + Nova

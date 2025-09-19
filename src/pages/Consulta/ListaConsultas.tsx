@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { deleteCliente, getClientePagination, getClienteSelect } from "../../services/cliente";
-import Filtros from "../../templates/Filtros";
 import { useForm, useWatch } from "react-hook-form";
 import useDebounce from "../../hooks/useDebounce";
 import { dateTimeStampToDate, dateTimeStampToHour, formatarPreco, formatToISO2, getTodayFormatted } from "../../utils/formatacoes";
@@ -210,7 +209,7 @@ export default function ListaConsulta() {
             </div>
             <div className={classNames("overflow-x-auto bg-white rounded-md shadow-md p-4 px-10", filtroVisivel ? "h-[487px]" : "h-[632px]")}>
                 {!loading ? (
-                    <table className="table-fixed w-full text-sm text-left border-collapse h-full">
+                    <table className="table-fixed w-full text-sm text-left border-collapse">
                         <thead className="text-black border-b">
                             <tr>
                                 <th className="min-w-[150px] px-2 py-3">Cliente</th>

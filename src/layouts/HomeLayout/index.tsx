@@ -19,7 +19,7 @@ export default function HomeLayout() {
         </div>
 
         <div className="flex flex-col flex-grow h-full">
-            {/* Barra superior */}
+          
             <div className="h-[56px] bg-white shadow flex items-center px-4 justify-between">
                 <button className="hover:cursor-pointer" onClick={handleMenu}>
                     <RxHamburgerMenu size={20} />
@@ -34,7 +34,7 @@ export default function HomeLayout() {
                 </button>
             </div>
 
-            {/* Conteúdo com scroll interno */}
+          
             <div className="flex-grow overflow-y-auto bg-gray-100 w-full p-4">
                 <Outlet />
             </div>
